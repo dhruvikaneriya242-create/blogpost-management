@@ -1,168 +1,196 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import "./Register.css";
-import{toast}from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
+import {toast} from "react-toastify";
 
-const Register = () => {
-  const navigate = useNavigate();
-
-  // state section
-  const [formData, setFormData] = useState({
+function Register() {
+  const [regData, setRegData] = useState({
     name: "",
     email: "",
     phone: "",
     password: "",
-    confirmPassword: "",
+    conPassword: "",
   });
 
-  const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
 
-  // input change handler
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
+  const navigate = useNavigate();
+
+  const [error, setError] = useState({});
+
+  const handleChange = (e) => {
+    setRegData({
+      ...regData,
+      [e.target.name]: e.target.value,
+    });
+    setError({
+      ...error,
+      [e.target.name]: "",
     });
   };
 
-  // form validation
-  const validate = () => {
-    let newErrors = {};
-
-    if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    }
-
-    if (!formData.phone.trim()) {
-      newErrors.phone = "Phone number is required";
-    }
-
-    if (!formData.password.trim()) {
-      newErrors.password = "Password is required";
-    }
-
-    if (!formData.confirmPassword.trim()) {
-      newErrors.confirmPassword = "Confirm password is required";
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  // submit handler
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (validate()) {
-      console.log("Register Data:", formData);
-      alert("Registered successfully 🎉");
-
-      // clear form
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        password: "",
-        confirmPassword: "",
-      });
-
-      // redirect to login page
+      localStorage.setItem("blog_rdata", JSON.stringify(regData));
+      toast.success("done");
       navigate("/login");
+    } else {
+      toast.error("somthing went wrong");
     }
   };
 
-  return (
-    <div className="form-container">
-      <h1 className="form-title">Create Account</h1>
-      <p>join us and start your journey</p>
+  const validate = () => {
+    const newError = {};
+    if (!regData.name.trim()) {
+      newError.name = "Full name is Required.";
+    } else if (regData.name.length <= 3) {
+      newError.name = "Minimum 3 Character Required.";
+    }
+    if (!regData.email.trim()) {
+      newError.email = "Email is Required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(regData.email)) {
+      newError.email = "Invalide Email formate.";
+    }
+    if (!regData.password.trim()) {
+      newError.password = "Password is Required.";
+    } else if (regData.password.length < 6) {
+      newError.password = "Minimum 6 Character Required.";
+    }
+    if (!regData.conPassword.trim()) {
+      newError.conPassword = "Confirm Password is Required.";
+    } else if (regData.conPassword.length < 6) {
+      newError.conPassword = "Minimum 6 Character Required.";
+    } else if (regData.password !== regData.conPassword) {
+      newError.conPassword = "Password and Confirm Password are not same!!.";
+    }
+    if (!regData.phone.trim()) {
+      newError.phone = "Phone is Required.";
+    } else if (!/^[0-9]{10}$/.test(regData.phone)) {
+      newError.phone = "Phone must be in 10 digit.";
+    }
+    setError(newError);
+    return Object.keys(newError).length === 0;
+  };
 
-      <form onSubmit={handleSubmit}>
-        {/* Name */}
+  return  (
+  <div className="register">
+    <div className="register-card">
+      <h1 className="register-title">Create Account</h1>
+      <p className="register-subtitle">Join Us And Start Our Journey</p>
+
+      <form className="register-form" onSubmit={handleSubmit}>
+
+        {/* Full Name */}
         <div className="form-group">
-          <label>Full Name</label>
+          <label htmlFor="name" className="form-label">Full Name</label>
           <input
             type="text"
             name="name"
-            value={formData.name}
-            placeholder="Enter your full name"
-            onChange={handleInputChange}
+            id="name"
+            className="form-input"
+            placeholder="Enter Your Full Name"
+            onChange={handleChange}
           />
-          {errors.name && <span className="error-msg">{errors.name}</span>}
+          {error.name && <span className="form-error">{error.name}</span>}
         </div>
 
         {/* Email */}
         <div className="form-group">
-          <label>Email Address</label>
+          <label htmlFor="email" className="form-label">Email Address</label>
           <input
             type="email"
             name="email"
-            value={formData.email}
-            placeholder="Enter your email"
-            onChange={handleInputChange}
+            id="email"
+            className="form-input"
+            placeholder="Enter Your Email Address"
+            onChange={handleChange}
           />
-          {errors.email && <span className="error-msg">{errors.email}</span>}
+          {error.email && <span className="form-error">{error.email}</span>}
         </div>
 
         {/* Phone */}
         <div className="form-group">
-          <label>Phone Number</label>
+          <label htmlFor="phone" className="form-label">Phone Number</label>
           <input
             type="tel"
             name="phone"
-            value={formData.phone}
-            placeholder="Enter your phone number"
-            onChange={handleInputChange}
+            id="phone"
+            className="form-input"
+            placeholder="Enter Your Phone Number"
+            onChange={handleChange}
           />
-          {errors.phone && <span className="error-msg">{errors.phone}</span>}
+          {error.phone && <span className="form-error">{error.phone}</span>}
         </div>
 
         {/* Password */}
         <div className="form-group">
-          <label>Password</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            placeholder="Create a password"
-            onChange={handleInputChange}
-          />
-          {errors.password && (
-            <span className="error-msg">{errors.password}</span>
+          <label htmlFor="password" className="form-label">Password</label>
+
+          <div className="password-wrapper">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              id="password"
+              className="form-input password-input"
+              placeholder="******"
+              onChange={handleChange}
+            />
+
+            <span
+              className="password-toggle"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? "🙈" : "👁️"}
+            </span>
+          </div>
+
+          {error.password && (
+            <span className="form-error">{error.password}</span>
           )}
         </div>
 
         {/* Confirm Password */}
         <div className="form-group">
-          <label>Confirm Password</label>
-          <input
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            placeholder="Re-enter your password"
-            onChange={handleInputChange}
-          />
-          {errors.confirmPassword && (
-            <span className="error-msg">{errors.confirmPassword}</span>
+          <label htmlFor="conPassword" className="form-label">
+            Confirm Password
+          </label>
+
+          <div className="password-wrapper">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="conPassword"
+              id="conPassword"
+              className="form-input password-input"
+              placeholder="******"
+              onChange={handleChange}
+            />
+
+            <span
+              className="password-toggle"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? "🙈" : "👁️"}
+            </span>
+          </div>
+
+          {error.conPassword && (
+            <span className="form-error">{error.conPassword}</span>
           )}
         </div>
 
-        <button type="submit" className="btn-primary">
+        <button type="submit" className="register-btn">
           Register
         </button>
       </form>
 
-      <p className="link-text">
-        Already have an account? <Link to="/login">Login here</Link>
+      <p className="register-footer">
+        Already have an Account? <Link to="/login">Login</Link>
       </p>
     </div>
-  );
-};
+  </div>
+);
+
+}
 
 export default Register;
