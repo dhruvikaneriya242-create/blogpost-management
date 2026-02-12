@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../Components/Navbar";
 import { FaPlus } from "react-icons/fa";
 import { MdDelete, MdEdit } from "react-icons/md";
-import "./Dashbord.css";
+import "./Dashboard.css";
 
 function Dashboard() {
   const [tasks,setTasks]=useState([])
 
   const fetchData=async()=>{
     try{
-const fData = await fetch("http://localhost:3000/posts")
+const fData = await fetch("http://localhost:3001/posts")
 const data=await fData.json();
 setTasks(data)
     }
@@ -94,7 +94,7 @@ setTasks(data)
                 <h3 className="post-card-title">{task.title}</h3>
 
                 <p className="post-card-description">
-                  {task.description}
+                  {task.descreption}
                 </p>
 
                 <button className="read-more-btn">
