@@ -11,6 +11,7 @@ import CreatePost from "./pages/CreatePost";
 import PostDetails from "./pages/PostDetails";
 import AuthGuard from "./Auth/AuthGuard";
 import { ToastContainer } from "react-toastify";
+import Analytics from "./pages/Analytics";
 
 const DefultRouter = () => {
   const data = JSON.parse(localStorage.getItem("blog_rdata"));
@@ -65,6 +66,14 @@ function App() {
       element: (
         <AuthGuard required={true}>
           <PostDetails />
+        </AuthGuard>
+      ),
+    },
+    {
+      path: "Analytics",
+      element: (
+        <AuthGuard required={true}>
+          <Analytics />
         </AuthGuard>
       ),
     },
