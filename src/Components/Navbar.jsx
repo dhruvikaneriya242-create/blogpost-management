@@ -1,7 +1,7 @@
 import React from "react";
 import { FaBlog, FaHome, FaPlusSquare, FaSignOutAlt } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
-import"./Navbar.css"
+import "./Navbar.css";
 
 function Navbar() {
   return (
